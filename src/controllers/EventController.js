@@ -7,7 +7,7 @@ module.exports = {
         try {
             const {title, description, price} = req.body;
             const { user_id } = req.headers;
-            const { img_name } = req.file;
+            const { filename } = req.file;
             const user = await User.findById(user_id);
 
             if(!user) {
@@ -21,12 +21,26 @@ module.exports = {
                 description,
                 price: parseFloat(price),
                 user: user_id,
-                thumbnail: img_name
+                thumbnail: filename
             })
             return res.json(event);
 
         } catch (error) {
             
+        }
+    },
+
+    async getEventById(req, res) {
+        const { eventId } = req.params;
+        try {
+            const event = await Event.findById(eventId);
+            if (event) {
+                return res.json(event);
+            } 
+        } catch (error) {
+            return res.status(400).json({
+                message: `Event does not exist!`
+            })
         }
     }
 }

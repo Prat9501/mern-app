@@ -19,6 +19,7 @@ routes.post('/user/register', UserController.createUser);
 routes.get('/user/:userId', UserController.getUserById);
 
 //Event
+routes.get('/event/:eventId', EventController.getEventById);
 routes.post('/event', img_uploader.single('thumbnail'), EventController.createEvent);
 
 module.exports = routes;

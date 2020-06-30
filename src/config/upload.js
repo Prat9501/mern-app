@@ -1,6 +1,5 @@
 const multer = require('multer');
 const path = require('path');
-const { model } = require('mongoose');
 
 
 module.exports = {
