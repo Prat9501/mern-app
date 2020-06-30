@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
-const RegisterController = require('./controllers/RegisterController');
+const routes = require('./routes');
 
 const PORT = process.env.PORT || 8000;
 
@@ -13,11 +13,7 @@ if(process.env.NODE_ENV !== 'production'){
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Hello from us');
-})
 
-app.post('/register', RegisterController.store);
 
 try {
     mongoose.connect(process.env.MONGO_DB_CONNECTION, {
@@ -28,6 +24,8 @@ try {
 } catch (error) {
     console.log(error);
 }
+
+app.use(routes);
 
 app.listen(PORT, () => {
     console.log(`Listening on ${PORT}`);
