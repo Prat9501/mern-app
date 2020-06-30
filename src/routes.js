@@ -1,12 +1,24 @@
 const express = require('express');
-const routes = express.Router();
+const multer = require('multer');
+
 const UserController = require('./controllers/UserController');
+const EventController = require('./controllers/EventController');
+const uploadConfig = require('./config/upload');
+
+const routes = express.Router();
+
+const img_uploader = multer(uploadConfig);
 
 
-routes.get('/', (req, res) => {
-    res.send('Hello from us');
+routes.get('/status', (req, res) => {
+    res.send("Status up and running");
 })
 
-routes.post('/register', UserController.store);
+//Users
+routes.post('/user/register', UserController.createUser);
+routes.get('/user/:userId', UserController.getUserById);
+
+//Event
+routes.post('/event', img_uploader.single('thumbnail'), EventController.createEvent);
 
 module.exports = routes;

@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 
 module.exports = {
-    async store(req, res){
+    async createUser(req, res){
         try {
             // console.log(req.body);
             const {firstName, lastName, password, email} = req.body;
@@ -28,6 +28,18 @@ module.exports = {
 
         } catch (error) {
             throw Error(`Error while registering user: ${error}`);
+        }
+    },
+
+    async getUserById(req, res){
+        const {userId} = req.params;
+        try {
+            const user = await User.findById(userId);
+            return res.json(user)
+        } catch (error) {
+            return res.status(400).json({
+                message: `User does not exist!`
+            })
         }
     }
 }
