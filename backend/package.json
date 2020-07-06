@@ -1,0 +1,27 @@
+{
+  "name": "mern-bootcamp",
+  "version": "1.0.0",
+  "description": "Full mern stack application",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git remote add origin https://github.com/Prat9501/mern-app.git"
+  },
+  "author": "Prateek",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.20"
+  },
+  "devDependencies": {
+    "bcrypt": "^5.0.0",
+    "multer": "^1.4.2",
+    "nodemon": "^2.0.4"
+  }
+}
