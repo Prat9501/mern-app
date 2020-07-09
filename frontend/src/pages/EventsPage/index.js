@@ -12,6 +12,10 @@ export default function EventsPage(){
     const [thumbnail, setThumbnail] = useState('');
     const [date, setDate] = useState('');
 
+    const submitHandler = () => {
+        return ''
+    }
+
     return (
         <Container>
             <h2>Create your Event</h2>
