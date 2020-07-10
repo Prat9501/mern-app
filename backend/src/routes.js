@@ -28,8 +28,8 @@ routes.post('/registration/:registration_id/rejections', RejectionController.rej
 routes.post('/login', LoginController.store);
 
 //Dashboard
-routes.get('/dashboard', DashboardController.getAllEvents);
 routes.get('/dashboard/:sport', DashboardController.getAllEvents);
+routes.get('/dashboard', DashboardController.getAllEvents);
 routes.get('/event/:eventId', DashboardController.getEventById);
 
 //Users
