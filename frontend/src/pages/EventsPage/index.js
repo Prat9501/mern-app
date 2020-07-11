@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import api from '../../services/api';
-import { Container, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Container, Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import cameraIcon from '../../assets/camera.png';
 import './events.css';
 
@@ -10,6 +10,7 @@ export default function EventsPage(){
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [thumbnail, setThumbnail] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(false);
     const [sport, setSport] = useState('');
     const [date, setDate] = useState('');
 
@@ -24,20 +25,27 @@ export default function EventsPage(){
         eventData.append('sport', sport);
         eventData.append('date', date);
         
-        if(
-            title !== '' && 
-            description !== '' &&
-            price !== '' &&
-            sport !== '' &&
-            date !== '' &&
-            thumbnail !== null
+        
+        try {
+            if(
+                title !== '' && 
+                description !== '' &&
+                price !== '' &&
+                sport !== '' &&
+                date !== '' &&
+                thumbnail !== null
             ){
-                try {
-                    await api.post('/event', eventData, {headers: {user_id}} )
-                } catch (error) {
-                    console.log(error.message);
-                }
+                await api.post('/event', eventData, {headers: {user_id}} )
+            } else {
+                setErrorMessage(true)
+                setTimeout(() => {
+                    setErrorMessage(false)
+                }, 2000)
             }
+        } catch (error) {
+            console.log(error.message);
+        }
+            
             
         evt.preventDefault();
         return ''
@@ -116,6 +124,9 @@ export default function EventsPage(){
                 </FormGroup>
                 <Button type='submit'>Create Event</Button>
             </Form>
+            {errorMessage ? (
+                <Alert className='event-validation' color='danger'>Missing required fields</Alert>
+            ): ''}
         </Container>
     )
 }   
