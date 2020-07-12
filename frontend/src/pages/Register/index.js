@@ -1,28 +1,46 @@
 import React, { useState } from 'react';
 import api from '../../services/api';
-import { Button, Form, FormGroup, Label, Input, Container } from 'reactstrap';
-
+import { Button, Form, FormGroup, Label, Input, Container, Alert } from 'reactstrap';
 
 
 export default function Register({ history }){
-    const [ email, setEmail ] = useState('')
-    const [ password, setPassword ] = useState('')
-    const [ firstName, setFirstName ] = useState('')
-    const [ lastName, setLastName ] = useState('')
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('false');
     
     const handleSubmit = async evt => {
         evt.preventDefault();
-        console.log(email, password, firstName, lastName);
 
-        const response = await api.post('/user/register', {email, password, firstName, lastName })
-        const userId = response.data._id || false;
-
-        if(userId){
-            localStorage.setItem('user', userId)
-            history.push('/dashboard')
+        if(email !== '' && password !== '' && firstName !== '' && lastName !== ''){
+            const response = await api.post('/user/register', {email, password, firstName, lastName })
+            console.log(response);
+            const userId = response.data._id || false;
+            try {
+                if(userId){
+                    console.log(userId);
+                    localStorage.setItem('user', userId)
+                    history.push('/dashboard')
+                } else {
+                    setError(true);
+                    setErrorMessage('Missing required fields');
+                    setTimeout(() => {
+                        setError(false)
+                        setErrorMessage('')
+                    }, 2000)
+                }
+            } catch (error) {
+                console.log(error);
+            }
         } else {
-            const { message } = response.data
-            console.log(message);
+            setError(true);
+            setErrorMessage('Please fill all the inputs');
+            setTimeout(() => {
+                setError(false)
+                setErrorMessage('')
+            }, 2000)
         }
     }
     
@@ -30,7 +48,7 @@ export default function Register({ history }){
         <Container>
             <h2>Register Form</h2>
             <Form onSubmit={handleSubmit}>
-                <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                <FormGroup>
                     <Label for="exampleFirstName" className="mr-sm-2">FirstName</Label>
                     <Input 
                         type="text" 
@@ -39,7 +57,7 @@ export default function Register({ history }){
                         onChange={evt=> setFirstName(evt.target.value)}
                         />
                 </FormGroup>
-                <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                <FormGroup>
                     <Label for="exampleLastName" className="mr-sm-2">LastName</Label>
                     <Input 
                         type="text" 
@@ -48,7 +66,7 @@ export default function Register({ history }){
                         onChange={evt=> setLastName(evt.target.value)}
                         />
                 </FormGroup>
-                <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                <FormGroup>
                     <Label for="exampleEmail" className="mr-sm-2">Email</Label>
                     <Input 
                         type="email" 
@@ -58,7 +76,7 @@ export default function Register({ history }){
                         onChange={evt=> setEmail(evt.target.value)}
                         />
                 </FormGroup>
-                <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                <FormGroup>
                     <Label for="examplePassword" className="mr-sm-2">Password</Label>
                     <Input 
                         type="password" 
@@ -68,8 +86,16 @@ export default function Register({ history }){
                         onChange={evt=> setPassword(evt.target.value)}
                         />
                 </FormGroup>
-                <Button>Submit</Button>
+                <FormGroup>
+                    <Button>Submit</Button>
+                </FormGroup>
+                <FormGroup>
+                    <Button onClick={() => history.push('/login')}>Login instead</Button>
+                </FormGroup>
             </Form>
+            {error ? (
+                <Alert className='event-validation' color='danger'>{errorMessage}</Alert>
+            ): ''}
         </Container>
     )
 }

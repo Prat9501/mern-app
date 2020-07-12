@@ -20,16 +20,15 @@ export default function Login({ history }){
                 localStorage.setItem('user', userId)
                 history.push('/dashboard')
             } else {
-                const { message } = response.data
                 setError(true);
-                setErrorMessage(message);
+                setErrorMessage('Missing required fields');
                 setTimeout(() => {
                     setError(false)
                     setErrorMessage('')
                 }, 2000)
             }
         } catch (error) {
-            
+            console.log(error);
         }
     }
     
@@ -57,10 +56,15 @@ export default function Login({ history }){
                         onChange={evt=> setPassword(evt.target.value)}
                         />
                 </FormGroup>
-                <Button type='submit'>Login</Button>
+                <FormGroup>
+                    <Button>Login</Button>
+                </FormGroup>
+                <FormGroup>
+                    <Button onClick={() => history.push('/register')}>Register Here</Button>
+                </FormGroup>
             </Form>
             {error ? (
-                <Alert className='event-validation' color='danger'>Missing required fields</Alert>
+                <Alert className='event-validation' color='danger'>{errorMessage}</Alert>
             ): ''}
         </Container>
     )

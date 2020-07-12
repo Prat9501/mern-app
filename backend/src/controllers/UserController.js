@@ -6,16 +6,16 @@ const bcrypt = require('bcrypt');
 module.exports = {
     async createUser(req, res){
         try {
-            // console.log(req.body);
-            const {firstName, lastName, password, email} = req.body;
+            console.log(req.body);
+            const {email, firstName, lastName, password} = req.body;
             const existentUser  = await User.findOne({email});
 
             if(!existentUser){
                 const hashedPassword = await bcrypt.hash(password, 10);
                 const user = User.create({
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
+                    email,
+                    firstName,
+                    lastName,
                     password: hashedPassword
                 })
                 return res.json({
@@ -25,12 +25,9 @@ module.exports = {
                     lastName: user.lastName
                 })
             }
-
             return res.status(400).json({
                 message: `email ${email} already exist!`
             })
-
-
         } catch (error) {
             throw Error(`Error while registering user: ${error}`);
         }
