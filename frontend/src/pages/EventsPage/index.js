@@ -5,12 +5,13 @@ import cameraIcon from '../../assets/camera.png';
 import './events.css';
 
 
-export default function EventsPage(){
+export default function EventsPage({history}){
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [thumbnail, setThumbnail] = useState(null);
     const [errorMessage, setErrorMessage] = useState(false);
+    const [success, setSuccess] = useState(false);
     const [sport, setSport] = useState('');
     const [date, setDate] = useState('');
 
@@ -36,6 +37,10 @@ export default function EventsPage(){
                 thumbnail !== null
             ){
                 await api.post('/event', eventData, {headers: {user_id}} )
+                setSuccess(true)
+                setTimeout(() => {
+                    setSuccess(false)
+                }, 2000)
             } else {
                 setErrorMessage(true)
                 setTimeout(() => {
@@ -122,10 +127,18 @@ export default function EventsPage(){
                         onChange={(evt) => setDate(evt.target.value)}
                         />
                 </FormGroup>
-                <Button type='submit'>Create Event</Button>
+                <FormGroup>
+                    <Button type='submit'>Create Event</Button>
+                </FormGroup>
+                <FormGroup>
+                    <Button onClick={() => history.push('/dashboard')}>Return to dashboard</Button>
+                </FormGroup>
             </Form>
             {errorMessage ? (
                 <Alert className='event-validation' color='danger'>Missing required fields</Alert>
+            ): ''}
+            {success ? (
+                <Alert className='event-validation' color='success'>Event created successfully</Alert>
             ): ''}
         </Container>
     )
