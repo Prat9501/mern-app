@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import api from '../../services/api';
 import { 
     Container, Button, Form, FormGroup, 
@@ -19,11 +19,15 @@ export default function EventsPage({history}){
     const [sport, setSport] = useState('Sport');
     const [date, setDate] = useState('');
     const [dropdownOpen, setOpen] = useState(false);
+    const user = localStorage.getItem('user');
+
+    useEffect(() => {
+        if(!user) history.push('/login');
+    },[])
 
     const toggle = () => setOpen(!dropdownOpen);
 
     const submitHandler = async (evt) => {
-        const user_id = localStorage.getItem('user');
         
         const eventData = new FormData();
         eventData.append('thumbnail', thumbnail);
@@ -43,7 +47,7 @@ export default function EventsPage({history}){
                 date !== '' &&
                 thumbnail !== null
             ){
-                await api.post('/event', eventData, {headers: {user_id}} )
+                await api.post('/event', eventData, {headers: {user}} )
                 setSuccess(true)
                 setTimeout(() => {
                     setSuccess(false)

@@ -18,14 +18,18 @@ export default function Dashboard({history}){
     }
 
     const myEventsHandler = async () => {
-        setRSelected('myEvents');
-        const response = await api.get('/user/events', {headers: {user_id: user_id}})
-        setEvents(response.data);
+        try {
+            setRSelected('myEvents');
+            const response = await api.get('/user/events', {headers: {user: user}})
+            setEvents(response.data.events);
+        } catch (error) {
+            history.push('/login');
+        }
     }
 
     const deleteEventHandler = async (eventId) => {
         try {
-            await api.delete(`/event/${eventId}`)
+            await api.delete(`/event/${eventId}`, {headers: {user: user}})
             setSuccess(true)
             setTimeout(() => {
                 filterHandler(null)
@@ -44,11 +48,14 @@ export default function Dashboard({history}){
     }, [])
 
     const getEvents = async (filter) => {
-        const url = filter ? `/dashboard/${filter}` : '/dashboard'
-        const response = await api.get(url, { headers: {user: user}})
-        setEvents(response.data)
+        try {
+            const url = filter ? `/dashboard/${filter}` : '/dashboard'
+            const response = await api.get(url, { headers: {user: user}})
+            setEvents(response.data.events)
+        } catch (error) {
+            history.push('/login');
+        }
     }
-    console.log(events);
     return (
         <>
         <div className='filter-panel'> 
