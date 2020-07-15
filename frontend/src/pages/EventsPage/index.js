@@ -47,6 +47,7 @@ export default function EventsPage({history}){
                 setSuccess(true)
                 setTimeout(() => {
                     setSuccess(false)
+                    history.push('/')
                 }, 2000)
             } else {
                 setErrorMessage(true)
@@ -141,7 +142,7 @@ export default function EventsPage({history}){
                     <Button type='submit'>Create Event</Button>
                 </FormGroup>
                 <FormGroup>
-                    <Button onClick={() => history.push('/')}>Return to dashboard</Button>
+                    <Button onClick={() => history.push('/')}>Cancel</Button>
                 </FormGroup>
             </Form>
             {errorMessage ? (

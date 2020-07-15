@@ -15,6 +15,21 @@ module.exports = {
         }
     },
 
+    async getEventsByUserId(req, res) {
+        const { user_id } = req.headers;
+
+        try {
+            const events = await Event.find({user: user_id});
+            if (events) {
+                return res.json(events);
+            } 
+        } catch (error) {
+            return res.status(400).json({
+                message: `No Events at this time.`
+            })
+        }
+    },
+
     async getAllEvents(req, res) {
         const { sport } = req.params;
         const query = sport ? { sport } : {};
