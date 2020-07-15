@@ -34,3 +34,9 @@ ul.events-list li span{
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
 }
+
+@media (max-width:768px){
+    ul.events-list {
+        grid-template-columns: 1fr;
+    }
+}
