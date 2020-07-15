@@ -5,7 +5,8 @@ import api from '../../services/api';
 import './dashboard.css';
 
 export default function Dashboard({history}){
-    const user_id = localStorage.getItem('user');
+    const user = localStorage.getItem('user');
+    const user_id = localStorage.getItem('user_id');
     const [events, setEvents] = useState([]);
     const [rSelected, setRSelected] = useState(null);
     const [errorMessage, setErrorMessage] = useState(false);
@@ -18,7 +19,7 @@ export default function Dashboard({history}){
 
     const myEventsHandler = async () => {
         setRSelected('myEvents');
-        const response = await api.get('/user/events', {headers: {user_id}})
+        const response = await api.get('/user/events', {headers: {user_id: user_id}})
         setEvents(response.data);
     }
 
@@ -44,7 +45,7 @@ export default function Dashboard({history}){
 
     const getEvents = async (filter) => {
         const url = filter ? `/dashboard/${filter}` : '/dashboard'
-        const response = await api.get(url, { headers: {user_id}})
+        const response = await api.get(url, { headers: {user: user}})
         setEvents(response.data)
     }
     console.log(events);

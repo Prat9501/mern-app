@@ -16,12 +16,12 @@ export default function Register({ history }){
 
         if(email !== '' && password !== '' && firstName !== '' && lastName !== ''){
             const response = await api.post('/user/register', {email, password, firstName, lastName })
-            console.log(response);
-            const userId = response.data._id || false;
+            const user = response.data.user || false;
+            const user_id = response.data.user_id || false;
             try {
-                if(userId){
-                    console.log(userId);
-                    localStorage.setItem('user', userId)
+                if(user && user_id){
+                    localStorage.setItem('user', user)
+                    localStorage.setItem('user_id', user_id)
                     history.push('/dashboard')
                 } else {
                     setError(true);
