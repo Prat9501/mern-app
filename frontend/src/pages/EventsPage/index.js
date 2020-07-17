@@ -36,8 +36,7 @@ export default function EventsPage({history}){
         eventData.append('price', price);
         eventData.append('sport', sport);
         eventData.append('date', date);
-        
-        
+
         try {
             if(
                 title !== '' && 
@@ -62,8 +61,7 @@ export default function EventsPage({history}){
         } catch (error) {
             console.log(error.message);
         }
-            
-            
+
         evt.preventDefault();
         return ''
     }
