@@ -12,14 +12,40 @@ export default function Dashboard({history}){
     const [rSelected, setRSelected] = useState(null);
     const [errorMessage, setErrorMessage] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [messageHandler, setMessageHandler] = useState('');
 
     useEffect(() => {
-        const socket = socketio('http://localhost:8000')
+        getEvents();
+    }, [])
+
+    useEffect(() => {
+        const socket = socketio('http://localhost:8000', {query: {user: user_id}})
+        socket.on('registration_request', data => console.log(data));
     }, [])
 
     const filterHandler = (query) => {
         setRSelected(query);
         getEvents(query);
+    }
+
+    const registrationRequestHandler = async (event) => {
+        try {
+            await api.post(`/registration/${event.id}`, {}, {headers: {user}})
+            setSuccess(true)
+            setMessageHandler(`Registration request for event ${event.title} sent successfully!`)
+            setTimeout(() => {
+                filterHandler(null)
+                setSuccess(false)
+                setMessageHandler('')
+            }, 2000)
+        } catch (error) {
+            setErrorMessage(true)
+            setMessageHandler('Registration request failed.')
+            setTimeout(() => {
+                setErrorMessage(false)
+                setMessageHandler('')
+            }, 2000)
+        }
     }
 
     const myEventsHandler = async () => {
@@ -36,14 +62,18 @@ export default function Dashboard({history}){
         try {
             await api.delete(`/event/${eventId}`, {headers: {user: user}})
             setSuccess(true)
+            setMessageHandler('Event deleted successfully')
             setTimeout(() => {
                 filterHandler(null)
                 setSuccess(false)
+                setMessageHandler('')
             }, 2000)
         } catch (error) {
             setErrorMessage(true)
+            setMessageHandler('Error in deleting the event.')
             setTimeout(() => {
                 setErrorMessage(false)
+                setMessageHandler('')
             }, 2000)
         }
     }
@@ -53,10 +83,6 @@ export default function Dashboard({history}){
         localStorage.removeItem('user_id');
         history.push('/login');
     }
-
-    useEffect(() => {
-        getEvents();
-    }, [])
 
     const getEvents = async (filter) => {
         try {
@@ -76,7 +102,7 @@ export default function Dashboard({history}){
                 <Button color="primary" onClick={() => filterHandler('Cricket')} active={rSelected === 'Cricket'}>Cricket</Button>
                 <Button color="primary" onClick={() => filterHandler('Swimming')} active={rSelected === 'Swimming'}>Swimming</Button>
                 <Button color="primary" onClick={() => filterHandler('Cycling')} active={rSelected === 'Cycling'}>Cycling</Button>
-                <Button color="primary" onClick={() => filterHandler('wrestling')} active={rSelected === 'wrestling'}>Wrestling</Button>
+                <Button color="primary" onClick={() => filterHandler('Wrestling')} active={rSelected === 'Wrestling'}>Wrestling</Button>
             </ButtonGroup>
             <Button color='success' onClick={() => history.push('/events')}>Create Event</Button>
             <Button color='success' onClick={logoutHandler}>Logout</Button>
@@ -93,16 +119,16 @@ export default function Dashboard({history}){
                         <span>Event Date: {moment(event.date).format('l')}</span>
                         <span>Entry Price: Rs {parseFloat(event.price).toFixed(2)}</span>
                         <span>Event Description: {event.description}</span>
-                        <Button color='primary'>Subscribe</Button>
+                        <Button color='primary' onClick={() => registrationRequestHandler(event)}>Subscribe</Button>
                     </li>
                 ))
             }
         </ul>
             {errorMessage ? (
-                <Alert className='event-validation' color='danger'>Error in deleting the event.</Alert>
+                <Alert className='event-validation' color='danger'>{messageHandler}</Alert>
             ): ''}
             {success ? (
-                <Alert className='event-validation' color='success'>Event deleted successfully</Alert>
+                <Alert className='event-validation' color='success'>{messageHandler}</Alert>
             ): ''}
         </>
     )

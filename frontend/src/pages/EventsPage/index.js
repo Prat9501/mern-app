@@ -63,7 +63,6 @@ export default function EventsPage({history}){
         }
 
         evt.preventDefault();
-        return ''
     }
 
     const preview = useMemo(() => {

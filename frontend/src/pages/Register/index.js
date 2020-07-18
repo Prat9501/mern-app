@@ -22,7 +22,7 @@ export default function Register({ history }){
                 if(user && user_id){
                     localStorage.setItem('user', user)
                     localStorage.setItem('user_id', user_id)
-                    history.push('/dashboard')
+                    history.push('/')
                 } else {
                     setError(true);
                     setErrorMessage('Missing required fields');

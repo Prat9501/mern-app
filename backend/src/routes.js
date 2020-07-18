@@ -20,7 +20,7 @@ routes.get('/status', (req, res) => {
     res.send("Status up and running");
 })
 //Registration
-routes.post('/registration/:eventId', RegistrationController.create);
+routes.post('/registration/:eventId', verifyToken, RegistrationController.create);
 routes.get('/registration/:registration_id', RegistrationController.getRegistration);
 routes.post('/registration/:registration_id/approvals', ApprovalController.approval);
 routes.post('/registration/:registration_id/rejections', RejectionController.rejection);
