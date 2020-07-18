@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
+import socketio from 'socket.io-client';
 import {Button, ButtonGroup, Alert} from 'reactstrap';
 import api from '../../services/api';
 import './dashboard.css';
@@ -11,6 +12,10 @@ export default function Dashboard({history}){
     const [rSelected, setRSelected] = useState(null);
     const [errorMessage, setErrorMessage] = useState(false);
     const [success, setSuccess] = useState(false);
+
+    useEffect(() => {
+        const socket = socketio('http://localhost:8000')
+    }, [])
 
     const filterHandler = (query) => {
         setRSelected(query);
