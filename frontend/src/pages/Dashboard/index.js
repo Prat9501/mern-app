@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import moment from 'moment';
 import socketio from 'socket.io-client';
 import {Button, ButtonGroup, Alert} from 'reactstrap';
@@ -13,15 +13,19 @@ export default function Dashboard({history}){
     const [errorMessage, setErrorMessage] = useState(false);
     const [success, setSuccess] = useState(false);
     const [messageHandler, setMessageHandler] = useState('');
+    const[eventsRequest, setEventsRequest] = useState([]);
 
     useEffect(() => {
         getEvents();
     }, [])
 
+    const socket =  useMemo(() => 
+        socketio('http://localhost:8000', {query: {user: user_id}})
+    , [user_id])
+
     useEffect(() => {
-        const socket = socketio('http://localhost:8000', {query: {user: user_id}})
-        socket.on('registration_request', data => console.log(data));
-    }, [])
+        socket.on('registration_request', data => setEventsRequest([...eventsRequest, data]));
+    }, [eventsRequest, socket])
 
     const filterHandler = (query) => {
         setRSelected(query);
@@ -95,6 +99,22 @@ export default function Dashboard({history}){
     }
     return (
         <>
+        <ul className="notifications">
+            {eventsRequest.map(request => {
+                return(
+                    <li key={request._id}>
+                        <div>
+                            <strong>{request.user.email}</strong> is requesting to register for an event.
+                            <strong>{request.event.title}</strong>
+                        </div>
+                        <ButtonGroup>
+                            <Button color='secondary' onClick={() => {}}>Accept</Button>
+                            <Button color='danger' onClick={() => {}}>Cancel</Button>
+                        </ButtonGroup>
+                    </li>
+                )
+            })}
+        </ul>
         <div className='filter-panel'> 
             <ButtonGroup>
                 <Button color="primary" onClick={() => filterHandler(null)} active={rSelected === null}>All</Button>
