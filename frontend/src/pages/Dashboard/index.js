@@ -82,12 +82,6 @@ export default function Dashboard({history}){
         }
     }
 
-    const logoutHandler = () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('user_id');
-        history.push('/login');
-    }
-
     const getEvents = async (filter) => {
         try {
             const url = filter ? `/dashboard/${filter}` : '/dashboard'
@@ -124,8 +118,6 @@ export default function Dashboard({history}){
                 <Button color="primary" onClick={() => filterHandler('Cycling')} active={rSelected === 'Cycling'}>Cycling</Button>
                 <Button color="primary" onClick={() => filterHandler('Wrestling')} active={rSelected === 'Wrestling'}>Wrestling</Button>
             </ButtonGroup>
-            <Button color='success' onClick={() => history.push('/events')}>Create Event</Button>
-            <Button color='success' onClick={logoutHandler}>Logout</Button>
         </div>
         <ul className='events-list'>
             {
