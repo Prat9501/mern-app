@@ -14,6 +14,8 @@ export default function Dashboard({history}){
     const [success, setSuccess] = useState(false);
     const [messageHandler, setMessageHandler] = useState('');
     const[eventsRequest, setEventsRequest] = useState([]);
+    const [eventRequestMessage, setEventRequestMessage] = useState('')
+    const [eventRequestSuccess, setEventRequestSuccess] = useState(false)
 
     useEffect(() => {
         getEvents();
@@ -91,6 +93,43 @@ export default function Dashboard({history}){
             history.push('/login');
         }
     }
+
+    const acceptEventHandler = async (eventId) => {
+        try {
+            await api.post(`/registration/${eventId}/approvals`, {}, { headers: { user } })
+            setEventRequestSuccess(true)
+            setEventRequestMessage('Event approved successfully!')
+            removeNotificationFromDashboard(eventId)
+            setTimeout(() => {
+                setEventRequestSuccess(false)
+                setEventRequestMessage('')
+            }, 2000)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const rejectEventHandler = async (eventId) => {
+        try {
+            await api.post(`/registration/${eventId}/rejections`, {}, { headers: { user } })
+            setEventRequestSuccess(true)
+            setEventRequestMessage('Event rejected successfully!')
+            removeNotificationFromDashboard(eventId)
+            setTimeout(() => {
+                setEventRequestSuccess(false)
+                setEventRequestMessage('')
+            }, 2000)
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const removeNotificationFromDashboard = (eventId) => {
+        const newEvents = eventsRequest.filter((event) => event._id !== eventId)
+        setEventsRequest(newEvents)
+    }
+
     return (
         <>
         <ul className="notifications">
@@ -102,13 +141,14 @@ export default function Dashboard({history}){
                             <strong>{request.event.title}</strong>
                         </div>
                         <ButtonGroup>
-                            <Button color='secondary' onClick={() => {}}>Accept</Button>
-                            <Button color='danger' onClick={() => {}}>Cancel</Button>
+                            <Button color='secondary' onClick={() => acceptEventHandler(request._id)}>Accept</Button>
+                            <Button color='danger' onClick={() => rejectEventHandler(request._id)}>Reject</Button>
                         </ButtonGroup>
                     </li>
                 )
             })}
         </ul>
+        {eventRequestSuccess ? <Alert color="success"> {eventRequestMessage}</Alert> : ""}
         <div className='filter-panel'> 
             <ButtonGroup>
                 <Button color="primary" onClick={() => filterHandler(null)} active={rSelected === null}>All</Button>

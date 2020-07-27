@@ -16,7 +16,6 @@ const TopNav = () => {
 
   return isLoggedIn ? 
     <div>
-        {console.log(isLoggedIn)}
       <Navbar color='light' light>
         <NavbarToggler onClick={toggleNavbar}/>
         <Link to='/login' onClick={logoutHandler}><Button color='success'>Logout</Button></Link>
