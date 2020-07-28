@@ -52,7 +52,7 @@ export default function MyRegistrations() {
                     <div><strong>{event.eventTitle}</strong></div>
                     <div className="events-details">
                         <span>Event Date: {moment(event.eventDate).format('l')}</span>
-                        <span>Event Price: £{parseFloat(event.eventPrice).toFixed(2)}</span>
+                        <span>Event Price: Rs. {parseFloat(event.eventPrice).toFixed(2)}</span>
                         <span>User Email: {event.userEmail}</span>
                         <span>Status:
                             <span className={event.approved !== undefined ? isApproved(event.approved) : "Pending"}>{event.approved !== undefined ? isApproved(event.approved) : "Pending"}</span>
