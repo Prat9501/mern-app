@@ -9,11 +9,10 @@ const ApprovalController = require('./controllers/ApprovalController');
 const RejectionController = require('./controllers/RejectionController');
 const DashboardController = require('./controllers/DashboardController');
 const LoginController = require('./controllers/LoginController');
-const uploadConfig = require('./config/upload');
+const uploadToS3 = require('./config/s3Upload');
 
 const routes = express.Router();
 
-const img_uploader = multer(uploadConfig);
 
 
 routes.get('/status', (req, res) => {
@@ -40,7 +39,7 @@ routes.post('/user/register', UserController.createUser);
 routes.get('/user/:userId', UserController.getUserById);
 
 //Event
-routes.post('/event', verifyToken, img_uploader.single('thumbnail'), EventController.createEvent);
+routes.post('/event', verifyToken, uploadToS3.single('thumbnail'), EventController.createEvent);
 routes.delete('/event/:eventId', verifyToken, EventController.deleteEvent);
 
 module.exports = routes;

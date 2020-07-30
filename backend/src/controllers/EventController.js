@@ -11,7 +11,7 @@ module.exports = {
             } else {
                 try {
                     const {title, description, price, sport, date} = req.body;
-                    const { filename } = req.file;
+                    const { location } = req.file;
                     const user = await User.findById(authData.user._id);
                     if(!user) {
                         return res.status(400).json({
@@ -25,7 +25,7 @@ module.exports = {
                         date,
                         price: parseFloat(price),
                         user: authData.user._id,
-                        thumbnail: filename
+                        thumbnail: location
                     })
                     return res.json(event);
         
